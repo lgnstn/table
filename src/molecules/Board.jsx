@@ -8,7 +8,7 @@ function Pill({ color }) {
 
 function Pile({ idx, dir, count, color }) {
     return (
-        <div className={`flex flex-col gap-2 w-9 h-[300px] items-center ${dir ? 'justify-start' : 'justify-end'}`}>
+        <div className={`relative flex flex-col gap-2 w-9 h-[300px] items-center ${dir ? 'justify-start' : 'justify-end'}`}>
             <div className={`w-1 z-0 h-[250px] ${idx % 2 ? 'bg-red-700' : 'bg-slate-800'} absolute`} />
             {Array.from({ length: count }).map((_, i) => (
                 <Pill key={i} color={color} />
@@ -28,7 +28,7 @@ export function Board({ state }) {
                 {Array.from({ length: 6 }).map((_, i) => (
                     <Pile key={i} idx={i} dir={true} count={state.board[0][i + 1] || state.board[1][i + 1]} color={state.board[0][i + 1] === 0} />
                 ))}
-                <div className="w-12 h-[300px] bg-zinc-800" />
+                <div className="w-12 h-[300px] bg-stone-700" />
                 {Array.from({ length: 6 }).map((_, i) => (
                     <Pile key={6 + i} idx={i} dir={true} count={state.board[0][6 + i + 1] || state.board[1][6 + i + 1]} color={state.board[0][6 + i + 1] === 0} />
                 ))}
@@ -37,7 +37,7 @@ export function Board({ state }) {
                 {Array.from({ length: 6 }).map((_, i) => i).reverse().map(i => (
                     <Pile key={18 + i} idx={i} dir={false} count={state.board[0][18 + i + 1] || state.board[1][18 + i + 1]} color={state.board[0][18 + i + 1] === 0} />
                 ))}
-                <div className="w-12 h-[300px] bg-zinc-800" />
+                <div className="w-12 h-[300px] bg-stone-700" />
                 {Array.from({ length: 6 }).map((_, i) => i).reverse().map(i => (
                     <Pile key={i} idx={i} dir={false} count={state.board[0][12 + i + 1] || state.board[1][12 + i + 1]} color={state.board[0][12 + i + 1] === 0} />
                 ))}

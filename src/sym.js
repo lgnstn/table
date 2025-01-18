@@ -11,17 +11,16 @@ export const startState = {
       0, // empty spot 
       0, 0, 0, 0, 0, 5,
       0, 3, 0, 0, 0, 0,
-      5, 0, 0, 0, 3, 0,
+      5, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 2
     ],
   ],
   inGame: [15, 15], // [black, white]
   out: [0, 0], // [black, white]
-  allInHouse: [0, 0], // [black, white]
+  allInHouse: [false, false], // [black, white]
 };
 
 function movePiece(state, from, step, color) {
-  console.log('>>> Move', from, step, color);
   const forbidden = {};
   for (let i = 1; i < state.board[1 - color].length; i++) {
     const cnt = state.board[1 - color][i];
@@ -154,7 +153,7 @@ function* move(
       }
     }
   } else {
-    if (state.board[1 - color][diceArr[0]] > 1) {
+    if (partialOut && state.board[1 - color][diceArr[0]] > 1) {
       return;
     }
 
@@ -221,7 +220,6 @@ function* move(
 export const playDice = (state, color, dice) => {
   const nextStates = [];
   for (const val of move(state, color, dice[0] == dice[1] ? dice.concat(dice) : dice)) {
-    console.log('>>> Next State', val);
     nextStates.push(val);
   }
 
@@ -234,63 +232,3 @@ export const playDice = (state, color, dice) => {
 
   return Object.values(map);
 }
-
-function getSymbol(board, i, pos) {
-  if (board[0][pos]) {
-    if (i === 9 && board[0][pos] >= i) {
-      return board[0][pos];
-    } else {
-      return board[0][pos] > i ? ' -' : '  ';
-    }
-  } else if (board[1][pos]) {
-    if (i === 9 && board[1][pos] >= i) {
-      return board[1][pos];
-    } else {
-      return board[1][pos] > i ? ' #' : '  ';
-    }
-  } else {
-    return '  ';
-  }
-}
-
-function print(board) {
-  let topRows = [], bottomRows = []
-  for (let i = 0; i < 10; ++i) {
-    if (i === 0) {
-      topRows.push(['|   .  .  .  .  .  .   |   .  .  .  .  .  .  |']);
-      bottomRows.push(['|   .  .  .  .  .  .   |   .  .  .  .  .  .  |']);
-    }
-    const tr = ['|  '];
-    const br = ['|  '];
-
-    for (let j = 1; j <= 12; ++j) {
-      tr.push(getSymbol(board, i, j));
-
-      br.push(getSymbol(board, i, 24 - j));
-
-      if (j === 6) {
-        tr.push('   |   ');
-        br.push('   |   ');
-      }
-    }
-
-    tr.push(['   |']);
-    tr.push(['   |']);
-
-    topRows.push(tr.join(''));
-    bottomRows.push(br.join(''));
-  }
-
-  const rows = [
-    topRows.join('\n'),
-    Array(26).fill('  ').join(''),
-    Array(26).fill('  ').join(''),
-    bottomRows.reverse().join('\n'),
-  ].join('');
-
-  console.log('A \n B')
-  console.log(`%c${rows}`, 'font-family: monospace');
-
-}
-
-// print(startState.board);
