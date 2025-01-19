@@ -227,18 +227,17 @@ function* move(
   }
 }
 
-export const playDice = (state, color, dice) => {
-  const nextStates = [];
-  for (const val of move(state, color, dice[0] == dice[1] ? dice.concat(dice) : dice)) {
-    nextStates.push(val);
+export const playDice = (states, color, dice) => {
+  const map = {};
+  for (const state of states) {
+    for (const val of move(state, color, dice[0] == dice[1] ? dice.concat(dice) : dice)) {
+      const key = JSON.stringify(val);
+
+      if (!map[key]) {
+        map[key] = val;
+      }
+    }
   }
-
-  const map = nextStates.reduce((acc, val) => {
-    const key = JSON.stringify(val);
-    acc[key] = val;
-
-    return acc;
-  }, {});
 
   return Object.values(map);
 }

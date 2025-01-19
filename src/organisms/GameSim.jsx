@@ -101,7 +101,7 @@ export function GameSim() {
 
     const simulate = () => {
         if (mode === MODE_ONE) {
-            const nextStates = playDice(initialStates[0], player, dice);
+            const nextStates = playDice(initialStates, player, dice);
             setStates([...nextStates]);
         } else {
             setWorking(true);
@@ -110,7 +110,7 @@ export function GameSim() {
                 setRounds(r => r + 1);
                 setInitialStates(states.length ? states : initialStates);
                 const theStates = states.length > 0 ? states : initialStates;
-                const nextStates = theStates.flatMap(state => playDice(state, player, dice));
+                const nextStates = playDice(theStates, player, dice);
                 setStates([...nextStates]);
                 setWorking(false);
             }, 0);
