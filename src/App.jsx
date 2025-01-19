@@ -1,10 +1,10 @@
 import './App.css'
-import { GameSym } from './organisms'
+import { GameSim } from './organisms'
 
 function App() {
   return (
     <>
-      <GameSym />
+      <GameSim />
     </>
   )
 }

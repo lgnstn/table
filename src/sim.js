@@ -30,7 +30,12 @@ function movePiece(state, from, step, color) {
     }
   }
 
-  const to = color ? from - step : from + step;
+  let to;
+  if (from === 0 || from === 25) {
+    to = color ? step : 25 - step;
+  } else {
+    to = color ? from - step : from + step;
+  }
 
   const newState = {
     board: [[...state.board[0]], [...state.board[1]]],
@@ -85,6 +90,11 @@ function* move(
   color,
   diceArr // [dice1, dice2] or [dice, dice, dice, dice]
 ) {
+  if (state.inGame[color] === 0 || state.inGame[1 - color] === 0) {
+    // game over
+    return state;
+  }
+
   const partialOut = state.out[color] === 1;
   const allOut = state.out[color] >= diceArr.length;
 
@@ -99,7 +109,7 @@ function* move(
       }
     }
 
-    yield nextState;
+    return nextState;
   }
 
   if (diceArr.length === 2) {
@@ -231,4 +241,63 @@ export const playDice = (state, color, dice) => {
   }, {});
 
   return Object.values(map);
+}
+
+export function stateScore(state, q) {
+  return {
+    b: blackScore(state, q),
+    w: whiteScore(state, q),
+  };
+}
+
+export function whiteScore(state, q) {
+  if (state.inGame[1] === 0) {
+    return 0;
+  }
+
+  let score = (q + 3) * state.out[1];
+
+  return state.board[1].reduce((acc, val, idx) => {
+    return acc + val * idx * (val === 1 ? q + 1 : q)
+  }, score);
+}
+
+export function blackScore(state, q) {
+  if (state.inGame[0] === 0) {
+    return 0;
+  }
+
+  let score = (q + 3) * state.out[0];
+
+  return state.board[0].reduce((acc, val, idx) => {
+    return acc + val * (25 - idx) * (val === 1 ? q + 1 : q)
+  }, score);
+}
+
+export function calcStats(scores) {
+  return scores.reduce((acc, score) => {
+    if (score.b < score.w) {
+      acc[0]++;
+    } else if (score.b > score.w) {
+      acc[1]++;
+    } else {
+      acc[2]++;
+    }
+
+    return acc;
+  }, [0, 0, 0]); // [black, white, draw]
+}
+
+export function calcWins(scores) {
+  return scores.reduce((acc, state) => {
+    if (state.b === 0) {
+      acc[0]++;
+    }
+
+    if (state.w === 0) {
+      acc[1]++;
+    }
+
+    return acc;
+  }, [0, 0]);
 }

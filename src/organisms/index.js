@@ -1,1 +1,1 @@
-export * from './GameSym.jsx';
+export * from './GameSim.jsx';
